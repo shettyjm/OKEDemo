@@ -1,0 +1,18 @@
+box: node:10.9.0-alpine
+build:
+  steps:
+    - script:
+        name: A step that executes `npm install` command
+        code: npm install
+
+# pipeline to store container on Docker Hub
+push-to-dockerhub:
+    steps:
+      # Push to public docker repo
+      - internal/docker-push:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
+          tag:  $DOCKER_TAG
+          repository: $DOCKER_USERNAME/$WERCKER_APPLICATION_NAME
+          registry: https://index.docker.io/v2/
+          cmd: node /pipeline/source/main.js

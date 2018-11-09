@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kubeproject-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubeproject
+        version: v1
+    spec:
+      containers:
+      - name: kubeproject
+        image: iad.ocir.io/cloud_pursuit_west/eca-demo:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+      imagePullSecrets:
+      - name: regcred
