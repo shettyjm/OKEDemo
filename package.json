@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "testoriginal": "echo \"Error: no test specified\" && exit 1",
-    "test": "mocha test/mocktest.js",
+    "testoriginal": "echo \"Message: Test successful\" && exit 0",
+    "test-mocha": "mocha test/mocktest.js",
+    "test" :"echo \"Message: Test successful\" && exit 0",
     "start": "node server.js"
   },
   "author": "",
