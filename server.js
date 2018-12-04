@@ -14,6 +14,10 @@ app.use(express.static(path.join(__dirname, '/')));
 app.use(bodyParser.json());
 
 
+app.get('/test', function(req, res) {  
+    res.status(200).json({status:true});
+});
+
 
 var port = process.env.PORT || 3000;
 // app.listen(port, function () {
@@ -24,3 +28,5 @@ var server = app.listen(port, function () {
     console.log('<----------listening on localhost ' + port + '---------->');
 });
 
+
+module.exports = server
