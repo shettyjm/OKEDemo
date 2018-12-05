@@ -63,6 +63,6 @@ jobs:
             command: |
               TAG=0.1.$CIRCLE_BUILD_NUM
               docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
-              docker build -t cloud_pursuit_west/eca-demo              # (4)
+              docker build -t cloud_pursuit_west/eca-demo .             # (4)
               docker push cloud_pursuit_west/eca-demo
 
