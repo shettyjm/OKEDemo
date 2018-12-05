@@ -55,6 +55,36 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+        - run:
+           name : Install Kubectl
+           command: |
+                set -x
+                k8sversion=v1.8.11
+                curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl
+                chmod +x ./kubectl
+                mv -f kubectl /usr/bin/kubectl
+                # sed -i -e "s/CERT_DATA/$CERT_DATA/g" kubernetes/config
+                # sed -i -e "s/TOKEN_DATA/$TOKEN_DATA/g" kubernetes/config
+                # mkdir -p $HOME/.kube
+                # cp kubernetes/config $HOME/.kube/config
+                # kubectl version
+      - run:
+          name: Configure OKE access
+          command: |
+                set -x
+                mkdir -p $HOME/.kube
+                export ENDPOINT="containerengine.us-ashburn-1.oraclecloud.com"
+                #rm -f ~/.oci/config
+                mkdir -p $HOME/.oci
+                cp ociconfig ~/.oci/config
+                echo $OCI_API_KEY > ~/.oci/oci_api_key.pem
+                cat ~/.oci/oci_api_key.pem
+                sed -i -e "s/OCI_USER/$OCI_USER/g" ~/.oci/config
+                sed -i -e "s/OCI_USER_FP/$OCI_USER_FP/g" ~/.oci/config
+                sed -i -e "s/OCI_TENANCY_ID/$OCI_TENANCY_ID/g" ~/.oci/config
+                sed -i -e "s/OCI_REGION/$OCI_REGION/g" ~/.oci/config
+                ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
+                kubectl get nodes
       - run: yarn install
 
       - save_cache:
@@ -77,35 +107,7 @@ jobs:
               docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
               docker build -t iad.ocir.io/cloud_pursuit_west/eca-demo:crclci .             # (4)
               docker push iad.ocir.io/cloud_pursuit_west/eca-demo:crclci
-      - run:
-           name : Install Kubectl
-           command: |
-                set -x
-                k8sversion=v1.8.11
-                curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl
-                chmod +x ./kubectl
-                mv -f kubectl /usr/bin/kubectl
-                # sed -i -e "s/CERT_DATA/$CERT_DATA/g" kubernetes/config
-                # sed -i -e "s/TOKEN_DATA/$TOKEN_DATA/g" kubernetes/config
-                # mkdir -p $HOME/.kube
-                # cp kubernetes/config $HOME/.kube/config
-                # kubectl version
-      - run:
-          name: Configure OKE access
-          command: |
-                set -x
-                mkdir -p $HOME/.kube
-                export ENDPOINT="containerengine.us-ashburn-1.oraclecloud.com"
-                #rm -f ~/.oci/config
-                cp ociconfig ~/.oci/config
-                echo $OCI_API_KEY > ~/.oci/oci_api_key.pem
-                cat ~/.oci/oci_api_key.pem
-                sed -i -e "s/OCI_USER/$OCI_USER/g" ~/.oci/config
-                sed -i -e "s/OCI_USER_FP/$OCI_USER_FP/g" ~/.oci/config
-                sed -i -e "s/OCI_TENANCY_ID/$OCI_TENANCY_ID/g" ~/.oci/config
-                sed -i -e "s/OCI_REGION/$OCI_REGION/g" ~/.oci/config
-                ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
-                kubectl get nodes
+    
       - run:
          name : Deploy to OKE
          command: |
