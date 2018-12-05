@@ -24,6 +24,8 @@ var port = process.env.PORT || 3000;
 //     console.log('<----------listening on localhost ' + port + '---------->')
 // });
 
+let now = new Date();
+
 var server = app.listen(port, function () {
     console.log('<----------listening on localhost ' + port + '---------->');
 });
