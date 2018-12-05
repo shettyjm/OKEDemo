@@ -89,6 +89,7 @@ jobs:
                 kubectl delete deployment kubeproject-v1
                 kubectl create -f kubernetes/ecadraft1.yaml --save-config
                 sleep 5
+                kubectl delete service circlecli-oke-demo
                 kubectl expose deployment kubeproject-v1 --type=LoadBalancer --name=circlecli-oke-demo
                 sleep 5
                 kubectl get svc
