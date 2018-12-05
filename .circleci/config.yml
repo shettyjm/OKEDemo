@@ -7,7 +7,8 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:7.10
+     # - image: circleci/node:7.10
+       - image: docker:17.05.0-ce-git
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -20,6 +21,15 @@ jobs:
       - checkout
 
       # Download and cache dependencies
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --no-cache \
+              py-pip=9.0.0-r1
+            apk add --update nodejs nodejs-npm apk yarn
+            pip install \
+              docker-compose==1.12.0
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
@@ -37,17 +47,13 @@ jobs:
       - run: yarn test
 
       - run:
-          name: Install Docker client
+          name: Check docker version
           command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
-      # build and push Docker image
-      - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
-          docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
-          docker build -t cloud_pursuit_west/eca-demo              # (4)
-          docker push cloud_pursuit_west/eca-demo
+            docker version
+      # # build and push Docker image
+      # - run: |
+      #     TAG=0.1.$CIRCLE_BUILD_NUM
+      #     docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
+      #     docker build -t cloud_pursuit_west/eca-demo              # (4)
+      #     docker push cloud_pursuit_west/eca-demo
 
