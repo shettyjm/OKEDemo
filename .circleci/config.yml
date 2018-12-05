@@ -69,7 +69,7 @@ jobs:
                 #rm -f ~/.oci/config
                 mkdir -p $HOME/.oci
                 cp ociconfig ~/.oci/config
-                echo $OCI_API_KEY > ~/.oci/oci_api_key.pem
+                echo $OCI_API_KEY > $HOME/.oci/oci_api_key.pem
                 cat ~/.oci/oci_api_key.pem
                 sed -i -e "s/OCI_USER/$OCI_USER/g" ~/.oci/config
                 sed -i -e "s/OCI_USER_FP/$OCI_USER_FP/g" ~/.oci/config
