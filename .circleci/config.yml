@@ -72,11 +72,14 @@ jobs:
                 echo '-----BEGIN RSA PRIVATE KEY-----' > $HOME/.oci/oci_api_key.pem
                 echo $OCI_API_KEY >> $HOME/.oci/oci_api_key.pem
                 echo '-----END RSA PRIVATE KEY-----' >> $HOME/.oci/oci_api_key.pem
+                chmod 600 $HOME/.oci/oci_api_key.pem
                 cat $HOME/.oci/oci_api_key.pem
                 sed -i -e "s/OCI_USER/$OCI_USER/g" ~/.oci/config
                 sed -i -e "s/OCI_USER_FP/$OCI_USER_FP/g" ~/.oci/config
                 sed -i -e "s/OCI_TENANCY_ID/$OCI_TENANCY_ID/g" ~/.oci/config
                 sed -i -e "s/OCI_REGION/$OCI_REGION/g" ~/.oci/config
+                ls -ltr $HOME/.oci
+                cat ~/.oci/config
                 touch $HOME/.kube/config
                 cat $HOME/.kube/config
                 ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
