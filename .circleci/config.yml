@@ -34,7 +34,6 @@ jobs:
                oci --help
                oci -version
 
-
       # use a primary image that already has Docker (recommended)
       # or install it during a build like we do here
       
@@ -48,14 +47,7 @@ jobs:
             sudo chown -R $(whoami) /usr/bin
             mv -f /tmp/docker/* /usr/bin
             docker --version
-
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-        - run:
+      - run:
            name : Install Kubectl
            command: |
                 set -x
@@ -85,6 +77,13 @@ jobs:
                 sed -i -e "s/OCI_REGION/$OCI_REGION/g" ~/.oci/config
                 ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
                 kubectl get nodes
+      
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
       - run: yarn install
 
       - save_cache:
@@ -107,7 +106,6 @@ jobs:
               docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
               docker build -t iad.ocir.io/cloud_pursuit_west/eca-demo:crclci .             # (4)
               docker push iad.ocir.io/cloud_pursuit_west/eca-demo:crclci
-    
       - run:
          name : Deploy to OKE
          command: |
