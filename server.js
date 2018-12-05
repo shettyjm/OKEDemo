@@ -30,3 +30,5 @@ var server = app.listen(port, function () {
 
 
 module.exports = server
+
+//sed -i 's/cert_data/$/g' file.txt

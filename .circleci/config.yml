@@ -78,6 +78,25 @@ jobs:
                 mkdir -p $HOME/.kube
                 cp kubernetes/config $HOME/.kube/config
                 kubectl version
+      - run:
+         name : Deploy to OKE
+         command: |
+                set -x
+                kubectl get nodes
+                cat kubernetes/ecadraft1.yaml
+                kubectl delete secrets regcred
+                kubectl create secret docker-registry regcred --docker-server=iad.ocir.io --docker-username=$DOCKER_USER --docker-password=$DOCKER_PASS  --docker-email=shettyjm@gmail.com || echo 'secret exists'
+                kubectl delete deployment kubeproject-v1
+                kubectl create -f kubernetes/ecadraft1.yaml --save-config
+                sleep 5
+                kubectl expose deployment kubeproject-v1 --type=LoadBalancer --name=circlecli-oke-demo
+                sleep 5
+                kubectl get svc
+                sleep 5
+                kubectl get svc
+                sleep 5
+                kubectl get svc
+                sleep 5
       
   #deploy:
      
