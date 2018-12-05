@@ -77,6 +77,7 @@ jobs:
                 sed -i -e "s/OCI_USER_FP/$OCI_USER_FP/g" ~/.oci/config
                 sed -i -e "s/OCI_TENANCY_ID/$OCI_TENANCY_ID/g" ~/.oci/config
                 sed -i -e "s/OCI_REGION/$OCI_REGION/g" ~/.oci/config
+                touch $HOME/.kube/config
                 cat $HOME/.kube/config
                 ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
                 cat $HOME/.kube/config
