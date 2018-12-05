@@ -1,5 +1,5 @@
 user=OCI_USER
 fingerprint=OCI_USER_FP
-key_file=$HOME/.oci/oci_api_key.pem
+key_file=/home/circleci/.oci/oci_api_key.pem
 tenancy=OCI_TENANCY_ID
 region=OCI_REGION
