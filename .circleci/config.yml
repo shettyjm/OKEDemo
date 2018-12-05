@@ -73,6 +73,11 @@ jobs:
                 curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl
                 chmod +x ./kubectl
                 mv -f kubectl /usr/bin/kubectl
+                sed -i -e "s/CERT_DATA/$CERT_DATA/g" kubernetes/config
+                sed -i -e "s/TOKEN_DATA/$TOKEN_DATA/g" kubernetes/config
+                mkdir -p $HOME/.kube
+                cp kubernetes/config $HOME/.kube/config
                 kubectl version
+      
   #deploy:
      
