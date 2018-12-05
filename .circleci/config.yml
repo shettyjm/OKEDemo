@@ -65,4 +65,14 @@ jobs:
               docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
               docker build -t iad.ocir.io/cloud_pursuit_west/eca-demo:crclci .             # (4)
               docker push iad.ocir.io/cloud_pursuit_west/eca-demo:crclci
-
+      - run:
+           name : Install Kubectl
+            command: |
+                set -x
+                k8sversion=v1.8.11
+                curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl
+                chmod +x ./kubectl
+                sudo mv -f kubectl /usr/bin/kubectl
+                kubectl version
+  #deploy:
+     
