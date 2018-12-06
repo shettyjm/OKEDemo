@@ -108,7 +108,7 @@ function rawurlencode {
 }
 
 function main {
-   # [[ -z "${1}" ]] && die_usage "Cluster ID must be passed as first argument"
+    [[ -z "${1}" ]] && die_usage "Cluster ID must be passed as first argument"
     [[ -f "${CONFIG}" ]] || die "${CONFIG} is not a file"
     [[ -z "${ENDPOINT}" ]] && die_usage "environment variable for ENDPOINT must be set"
 
@@ -125,8 +125,7 @@ function main {
 
     #jl echo "DEBUG: oci-curl \"${TENANCY}\" \"${USERID}\" \"${FINGERPRINT}\" \"${PRIVATEKEYPATH}\" \"${1}\""
 
-    #oci-curl "${TENANCY}" "${USERID}" "${FINGERPRINT}" "${PRIVATEKEYPATH}" "${1}"
-    oci-curl "${TENANCY}" "${USERID}" "${FINGERPRINT}" "${PRIVATEKEYPATH}" "${TENANCY}"
-}
+    oci-curl "${TENANCY}" "${USERID}" "${FINGERPRINT}" "${PRIVATEKEYPATH}" "${1}"
+ }
 
 main "$@"
