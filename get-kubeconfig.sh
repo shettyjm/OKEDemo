@@ -125,7 +125,8 @@ function main {
 
     #jl echo "DEBUG: oci-curl \"${TENANCY}\" \"${USERID}\" \"${FINGERPRINT}\" \"${PRIVATEKEYPATH}\" \"${1}\""
 
-    oci-curl "${TENANCY}" "${USERID}" "${FINGERPRINT}" "${PRIVATEKEYPATH}" "${1}"
+    #oci-curl "${TENANCY}" "${USERID}" "${FINGERPRINT}" "${PRIVATEKEYPATH}" "${1}"
+    oci-curl "${TENANCY}" "${USERID}" "${FINGERPRINT}" "${PRIVATEKEYPATH}" "${TENANCY}"
 }
 
 main "$@"
