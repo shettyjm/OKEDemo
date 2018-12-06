@@ -82,7 +82,7 @@ jobs:
                 # cat ~/.oci/config
                 touch $HOME/.kube/config
                 # cat $HOME/.kube/config
-                ./get-kubeconfig.sh $OCI_TENANCY_ID > $HOME/.kube/config
+                ./get-kubeconfig.sh  > $HOME/.kube/config
                 cat $HOME/.kube/config
                 kubectl get nodes
       
