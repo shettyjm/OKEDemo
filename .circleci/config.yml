@@ -82,7 +82,7 @@ jobs:
                 # cat ~/.oci/config
                 touch $HOME/.kube/config
                 # cat $HOME/.kube/config
-                ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
+                ./get-kubeconfig.sh $OCI_TENANCY_ID > $HOME/.kube/config
                 cat $HOME/.kube/config
                 kubectl get nodes
       
@@ -112,22 +112,24 @@ jobs:
             command: |
               docker version
               TAG=0.1.$CIRCLE_BUILD_NUM
+              export TAG=0.1.$CIRCLE_BUILD_NUM
               docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
-              docker build -t iad.ocir.io/cloud_pursuit_west/eca-demo:crclci .             # (4)
-              docker push iad.ocir.io/cloud_pursuit_west/eca-demo:crclci
+              docker build -t iad.ocir.io/cloud_pursuit_west/eca-demo:TAG .             # (4)
+              docker push iad.ocir.io/cloud_pursuit_west/eca-demo:TAG
       - run:
          name : Deploy to OKE
          command: |
                 set -x
                 kubectl get nodes
-                cat kubernetes/ecadraft1.yaml
+                sed -i -e "s/IMG_TAG/$TAG/g" kubernetes/circlecidemo.yaml
+                cat kubernetes/circlecidemo.yaml
                 kubectl delete secrets regcred
                 kubectl create secret docker-registry regcred --docker-server=iad.ocir.io --docker-username=$DOCKER_USER --docker-password=$DOCKER_PASS  --docker-email=shettyjm@gmail.com || echo 'secret exists'
-                kubectl delete deployment kubeproject-v1
-                kubectl create -f kubernetes/ecadraft1.yaml --save-config
+                kubectl delete deployment circlecidemo-v1
+                kubectl create -f kubernetes/circlecidemo.yaml --save-config
                 sleep 5
                 kubectl delete service circlecli-oke-demo
-                kubectl expose deployment kubeproject-v1 --type=LoadBalancer --name=circlecli-oke-demo
+                kubectl expose deployment circlecidemo-v1 --type=NodePort --name=circlecli-oke-demo
                 sleep 5
                 kubectl get svc
                 sleep 5
