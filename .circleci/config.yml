@@ -121,6 +121,7 @@ jobs:
          command: |
                 set -x
                 kubectl get nodes
+                export TAG=0.1.$CIRCLE_BUILD_NUM
                 sed -i -e "s/IMG_TAG/$TAG/g" kubernetes/circlecidemo.yaml
                 cat kubernetes/circlecidemo.yaml
                 kubectl delete secrets regcred
