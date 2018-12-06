@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: kubeproject
-        image: iad.ocir.io/cloud_pursuit_west/eca-demo:crclci
+        image: iad.ocir.io/cloud_pursuit_west/eca-demo:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
