@@ -82,7 +82,7 @@ jobs:
                 # cat ~/.oci/config
                 touch $HOME/.kube/config
                 # cat $HOME/.kube/config
-                ./get-kubeconfig.sh ocid1.cluster.oc1.iad.aaaaaaaaafrtam3fgyzdanrxheydanzrmjrgcmrtgvrwgmjymcqtgnleg4yg > $HOME/.kube/config
+                ./get-kubeconfig.sh $OKE_CLUSTER_ID > $HOME/.kube/config
                 cat $HOME/.kube/config
                 kubectl get nodes
       
