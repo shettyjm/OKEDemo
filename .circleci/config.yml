@@ -23,6 +23,10 @@ jobs:
       # Download and cache dependencies
       - setup_remote_docker:   # (2)
           docker_layer_caching: true # (3)
+      - run :
+         name : validate the code
+         command : |
+                 cat index.html | grep Hurry  
 
       - run :
           name :  Install OCI CLI
