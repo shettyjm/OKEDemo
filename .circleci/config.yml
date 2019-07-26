@@ -49,7 +49,8 @@ jobs:
          name:  docker publish to artifactory
          command : |
                  ./jfrog rt dp $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM docker-dev --build-name=circleci-docker-artifactory --build-number=$CIRCLE_BUILD_NUM
-                 
+                 ./jfrog rt bce circleci-docker-artifactory $CIRCLE_BUILD_NUM
+                 ./jfrog rt bp circleci-docker-artifactory $CIRCLE_BUILD_NUM
 
                   
                 
