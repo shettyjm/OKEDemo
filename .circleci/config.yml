@@ -35,9 +35,11 @@ jobs:
          command : |
                  cat index.html | grep Hurry  
                  echo 'export this-build-name="jagshetty-circleci-docker-build"' >> $BASH_ENV
-                 echo 'export dev_repo="docker-dev"' >> $BASH_ENV
+                 echo 'export dev_repo="docker"' >> $BASH_ENV
                  echo 'export stage_repo="docker-stage"' >> $BASH_ENV
                  echo 'export export prod_repo="docker-prod"' >> $BASH_ENV
+                 echo $this-build-name
+
 
       - run :
          name : set up Jfrog
