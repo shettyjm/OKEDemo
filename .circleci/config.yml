@@ -27,6 +27,12 @@ jobs:
          name : validate the code
          command : |
                  cat index.html | grep Hurry  
+      - run :
+         name : set up Jfrog
+         command : |
+                 curl -fL https://getcli.jfrog.io | sh
+                 ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_PASSWORD --interactive=false
+                 
 
       - run :
           name :  Install OCI CLI
