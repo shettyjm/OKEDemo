@@ -1,0 +1,145 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+       - image: circleci/node:8.9.0
+      #  - image: docker:17.05.0-ce-git
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - setup_remote_docker:   # (2)
+          docker_layer_caching: true # (3)
+      - run :
+         name : validate the code
+         command : |
+                 cat index.html | grep Hurry  
+      - run :
+          name :  Install OCI CLI
+          command : |
+               sudo apt-get install -y libssl-dev libffi-dev python-dev build-essential
+               bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh) --accept-all-defaults" 
+               /home/circleci/bin/oci --help
+               sudo cp -f  /home/circleci/bin/oci /usr/bin/oci
+               oci --help
+               oci -version
+      # use a primary image that already has Docker (recommended)
+      # or install it during a build like we do here
+      
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            sudo chown -R $(whoami) /usr/bin
+            mv -f /tmp/docker/* /usr/bin
+            docker --version
+      - run:
+           name : Install Kubectl
+           command: |
+                set -x
+                k8sversion=v1.8.11
+                curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl
+                chmod +x ./kubectl
+                mv -f kubectl /usr/bin/kubectl
+                # sed -i -e "s/CERT_DATA/$CERT_DATA/g" kubernetes/config
+                # sed -i -e "s/TOKEN_DATA/$TOKEN_DATA/g" kubernetes/config
+                # mkdir -p $HOME/.kube
+                # cp kubernetes/config $HOME/.kube/config
+                # kubectl version
+      - run:
+          name: Configure OKE access
+          command: |
+                set -x
+                mkdir -p $HOME/.kube
+                export ENDPOINT="containerengine.us-ashburn-1.oraclecloud.com"
+                #rm -f ~/.oci/config
+                mkdir -p $HOME/.oci
+                cp ociconfig ~/.oci/config
+                echo '-----BEGIN RSA PRIVATE KEY-----' > $HOME/.oci/oci_api_key.pem
+                echo $OCI_API_KEY >> $HOME/.oci/oci_api_key.pem
+                echo '-----END RSA PRIVATE KEY-----' >> $HOME/.oci/oci_api_key.pem
+                chmod 600 $HOME/.oci/oci_api_key.pem
+                # cat $HOME/.oci/oci_api_key.pem
+                sed -i -e "s/OCI_USER/$OCI_USER/g" ~/.oci/config
+                sed -i -e "s/OCI_FP/$OCI_USER_FP/g" ~/.oci/config
+                sed -i -e "s/OCI_TENANCY_ID/$OCI_TENANCY_ID/g" ~/.oci/config
+                sed -i -e "s/OCI_REGION/$OCI_REGION/g" ~/.oci/config
+                ls -ltr $HOME/.oci
+                # cat ~/.oci/config
+                touch $HOME/.kube/config
+                # cat $HOME/.kube/config
+                ./get-kubeconfig.sh $OKE_CLUSTER_ID > $HOME/.kube/config
+                cat $HOME/.kube/config
+                kubectl get nodes
+      
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+        
+      # run tests!
+      - run: yarn test
+
+      # - run:
+      #     name: Check docker version
+      #     command: |
+      #       docker version
+      #  # build and push Docker image
+      - run: 
+            name :  Build Docker Image
+            command: |
+              docker version
+              # TAG=0.1.$CIRCLE_BUILD_NUM
+              export TAG=0.1.$CIRCLE_BUILD_NUM
+              docker login iad.ocir.io -u $DOCKER_USER -p $DOCKER_PASS         # (5)
+              docker build -t iad.ocir.io/cloud_pursuit_west/circleci-demo:$TAG .             # (4)
+              docker push iad.ocir.io/cloud_pursuit_west/circleci-demo:$TAG
+      - run:
+         name : Deploy to OKE
+         command: |
+                set -x
+                kubectl get nodes
+                export TAG=0.1.$CIRCLE_BUILD_NUM
+                echo $TAG
+                sed -i -e "s/IMG_TAG/$TAG/g" kubernetes/circlecidemo.yaml
+                cat kubernetes/circlecidemo.yaml
+                kubectl delete secrets regcred
+                kubectl create secret docker-registry regcred --docker-server=iad.ocir.io --docker-username=$DOCKER_USER --docker-password=$DOCKER_PASS  --docker-email=shettyjm@gmail.com || echo 'secret exists'
+                kubectl delete deployment circlecidemo-v1
+                kubectl create -f kubernetes/circlecidemo.yaml --save-config
+                sleep 5
+                kubectl delete service circlecli-oke-demo
+                kubectl expose deployment circlecidemo-v1 --type=NodePort --name=circlecli-oke-demo
+                sleep 5
+                kubectl get svc
+                sleep 5
+                kubectl get svc
+                sleep 5
+                kubectl get svc
+                sleep 5
+      
+  #deploy:
