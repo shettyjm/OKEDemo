@@ -5,15 +5,16 @@
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-       - image: circleci/node:8.9.0
-      #  - image: docker:17.05.0-ce-git
+#     docker:
+#       # specify the version you desire here
+#        - image: circleci/node:8.9.0
+#       #  - image: docker:17.05.0-ce-git
       
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+#       # Specify service dependencies here if necessary
+#       # CircleCI maintains a library of pre-built images
+#       # documented at https://circleci.com/docs/2.0/circleci-images/
+#       # - image: circleci/mongo:3.4.4
+    machine: true
 
     working_directory: ~/repo
 
@@ -32,7 +33,8 @@ jobs:
          command : |
                  curl -fL https://getcli.jfrog.io | sh
                  ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_PASSWORD --interactive=false
-                 
+                 docker login -e $ARTIFACTORY_EMAIL -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD $ARTIFACTORY_DOCKER_REPOSITORY
+                 docker build --rm=false -t $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM .
 
       - run :
           name :  Install OCI CLI
