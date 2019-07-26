@@ -35,7 +35,7 @@ jobs:
                  ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --password $ARTIFACTORY_PASSWORD --interactive=false
                  echo 'done with artifactor config next login into docker repo'
                  
-                 docker login -e $ARTIFACTORY_EMAIL -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD $ARTIFACTORY_DOCKER_REPOSITORY
+                 docker login -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD $ARTIFACTORY_DOCKER_REPOSITORY
                  echo 'done with artifactor login next building a docker image'
                  docker build --rm=false -t $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM .
 
