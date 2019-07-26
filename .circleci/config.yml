@@ -24,14 +24,21 @@ jobs:
 #       # Download and cache dependencies
 #       - setup_remote_docker:   # (2)
 #           docker_layer_caching: true # (3)
+
+# - run:
+#       name: Setup Environment Variables
+#       command: |
+#         echo 'export PATH="$GOPATH/bin:$PATH"' >> $BASH_ENV
+#         echo 'export GIT_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       - run :
          name : validate the code,set variables
          command : |
                  cat index.html | grep Hurry  
-                 export this-build-name="jagshetty-circleci-docker-build"
-                 export dev_repo="docker-dev"
-                 export stage_repo="docker-stage"
-                 export prod_repo="docker-prod"
+                 echo 'export this-build-name="jagshetty-circleci-docker-build"' >> $BASH_ENV
+                 echo 'export dev_repo="docker-dev"' >> $BASH_ENV
+                 echo 'export stage_repo="docker-stage"' >> $BASH_ENV
+                 echo 'export export prod_repo="docker-prod"' >> $BASH_ENV
+
       - run :
          name : set up Jfrog
          command : |
