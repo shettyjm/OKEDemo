@@ -61,14 +61,14 @@ jobs:
       - run :
          name:  docker publish to artifactory dev repo
          command : |
-                 ./jfrog rt dp $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM $dev_repo --build-name=$this-build-name --build-number=$CIRCLE_BUILD_NUM
+                 ./jfrog rt dp $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM docker --build-name=$BUILD_NAME --build-number=$CIRCLE_BUILD_NUM
                   sleep 10
-                 ./jfrog rt bce $this-build-name $CIRCLE_BUILD_NUM
-                 ./jfrog rt bp  $this-build-name $CIRCLE_BUILD_NUM
+                 ./jfrog rt bce $BUILD_NAME  $CIRCLE_BUILD_NUM
+                 ./jfrog rt bp  $BUILD_NAME  $CIRCLE_BUILD_NUM
       - run : 
           name : docker image promote to prod repo
           command : |
-                 ./jfrog rt bpr $this-build-name 18 $stage_repo
+                 ./jfrog rt bpr $BUILD_NAME $CIRCLE_BUILD_NUM $STAGE_REPO
 
                   
                 
