@@ -28,10 +28,10 @@ jobs:
          name : validate the code,set variables
          command : |
                  cat index.html | grep Hurry  
-                 export this-build-name=jagshetty-circleci-docker-build
-                 export dev_repo=docker-dev
-                 export stage_repo=docker-stage
-                 export prod_repo=docker-prod
+                 export this-build-name="jagshetty-circleci-docker-build"
+                 export dev_repo="docker-dev"
+                 export stage_repo="docker-stage"
+                 export prod_repo="docker-prod"
       - run :
          name : set up Jfrog
          command : |
