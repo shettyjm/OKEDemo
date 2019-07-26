@@ -32,9 +32,11 @@ jobs:
          name : set up Jfrog
          command : |
                  curl -fL https://getcli.jfrog.io | sh
-                 ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_PASSWORD --interactive=false
-                 docker login -e $ARTIFACTORY_EMAIL -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD $ARTIFACTORY_DOCKER_REPOSITORY
-                 docker build --rm=false -t $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM .
+                 ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --password $ARTIFACTORY_PASSWORD --interactive=false
+                 
+                 
+#                 docker login -e $ARTIFACTORY_EMAIL -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD $ARTIFACTORY_DOCKER_REPOSITORY
+#                 docker build --rm=false -t $ARTIFACTORY_DOCKER_REPOSITORY/node-version:$CIRCLE_BUILD_NUM .
 
       - run :
           name :  Install OCI CLI
